@@ -1,0 +1,12 @@
+*.ipynb_checkpoints*
+*.DS_Store*
+*__pycache__*
+temp*
+data/agreement_data*
+data/dialog_data*
+data/sample-plots*
+data/example-dialogs
+*save-model*
+bert-classifier/outputs-*
+bert-classifier/runs*
+~$*
