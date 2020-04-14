@@ -1,7 +1,7 @@
 # ChartDialog
 
 ### Dataset download
-https://drive.google.com/file/d/1AaPR3XNVK-z80ph2bkxH22jujPPkH05R/view?usp=sharing
+https://drive.google.com/open?id=1-eT0vGwyPLPL2TOkUU0mmwqdRO_yXVPo
 
 ### How to run the baseline (seq2seq)
 #### Dialog preprocessing
