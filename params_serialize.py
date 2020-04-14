@@ -4,9 +4,9 @@ import os
 from tqdm import tqdm
 from collections import OrderedDict
 
-import plotter_3_0 as plotter
+import plotter
 
-def serialize_loose_1(params, pad_none=False):
+def serialize_split_1(params, pad_none=False):
 	# params: dict
 	param_strs_list = []
 	for k in plotter.SLOTS_NAT_ORDER:
@@ -22,7 +22,7 @@ def serialize_loose_1(params, pad_none=False):
 
 	return ' | '.join(param_strs_list)
 
-def deserialize_loose_1(params_str):
+def deserialize_split_1(params_str):
 	# params_str: string
 	if params_str == '[unchanged]':
 		return OrderedDict()
@@ -42,10 +42,10 @@ def deserialize_loose_1(params_str):
 			malform = True
 
 	if malform:
-		print('deserialize_loose_1 MALFORM:', params_str)
+		print('deserialize_split_1 MALFORM:', params_str)
 	return params
 
-def serialize_half_1(params, pad_none=False):
+def serialize_single_1(params, pad_none=False):
 	# params: dict
 	param_strs_list = []
 	for k in plotter.SLOTS_NAT_ORDER:
@@ -61,7 +61,7 @@ def serialize_half_1(params, pad_none=False):
 
 	return ' '.join(param_strs_list)
 
-def deserialize_half_1(params_str):
+def deserialize_single_1(params_str):
 	# params_str: string
 	if params_str == '[unchanged]':
 		return OrderedDict()
@@ -92,10 +92,10 @@ def deserialize_half_1(params_str):
 		malform = True
 
 	if malform:
-		print('deserialize_half_1 MALFORM:', params_str)
+		print('deserialize_single_1 MALFORM:', params_str)
 	return params
 
-def serialize_dense_1(params, pad_none=False):
+def serialize_pair_1(params, pad_none=False):
 	# params: dict
 	param_strs_list = []
 	for k in plotter.SLOTS_NAT_ORDER:
@@ -111,7 +111,7 @@ def serialize_dense_1(params, pad_none=False):
 
 	return ' '.join(param_strs_list)
 
-def deserialize_dense_1(params_str):
+def deserialize_pair_1(params_str):
 	# params_str: string
 	if params_str == '[unchanged]':
 		return OrderedDict()
@@ -130,57 +130,25 @@ def deserialize_dense_1(params_str):
 			malform = True
 
 	if malform:
-		print('deserialize_dense_1 MALFORM:', params_str)
+		print('deserialize_pair_1 MALFORM:', params_str)
 	return params
 
 
-def main_old():
-	plots_folder = 'sample-plots/plots'
-	params_folder = 'sample-plots/params'
-	params_txt_folder = 'sample-plots/params-txt'
-	root_folder = 'sample-plots/dataset'
-
-	os.makedirs(params_txt_folder, exist_ok=True)
-	os.makedirs(root_folder, exist_ok=True)
-
-	n_files = len(list(filter(lambda x : x.endswith('params.json'), os.listdir(params_folder))))
-
-	output_file_name_a = os.path.join(root_folder, 'params-txt-all.txt')
-	with open(output_file_name_a, 'w') as out_f_a:
-		for i in tqdm(range(n_files)):
-			input_file_name = os.path.join(params_folder, '{}.params.json'.format(i + 1))
-			params = json.load(open(input_file_name, 'r'))
-			params_str = serialize(params)
-			assert deserialize(params_str) == params, str(params) + '\n' + str(params_str) + '\n' + str(deserialize(params_str))
-
-			out_f_a.write(params_str + '\n')
-			output_file_name_s = os.path.join(params_txt_folder, '{}.params.txt'.format(i + 1))
-			with open(output_file_name_s, 'w') as out_f:
-				out_f.write(params_str + '\n')
-
 if __name__ == '__main__':
-	import dialog_preprocess as prep
+	# Sanity check
+	serializers = [serialize_split_1, serialize_single_1, serialize_pair_1]
+	deserializers = [deserialize_split_1, deserialize_single_1, deserialize_pair_1]
 
-	serializers = [serialize_loose_1, serialize_half_1, serialize_dense_1]
-	deserializers = [deserialize_loose_1, deserialize_half_1, deserialize_dense_1]
-	cmp_serializers = [prep.serialize_loose_1, prep.serialize_half_1, prep.serialize_dense_1]
-	cmp_deserializers = [prep.deserialize_loose_1, prep.deserialize_half_1, prep.deserialize_dense_1]
+	for serializer, deserializer in zip(serializers, deserializers):
+		for i in range(100):
+			data, params_dict = plotter.sample_one_hard()
+			_s = serializer(params_dict)
+			_d = deserializer(_s)
+			_s2 = serializer(_d)
 
-	params_data_dir = '/Users/mac/Desktop/syt/Deep-Learning/Dataset/ParlAI-data/plots-data/params'
-	params_fname_list = list(filter(lambda x : x.endswith('params.json'), os.listdir(params_data_dir)))
+			# assert params_dict == _d, json.dumps(params_dict, indent=4) + '\n\n' + json.dumps(_d, indent=4)
+			assert _s == _s2, _s + '\n' + _s2
 
-	for serializer, deserializer, cmp_serializer, cmp_deserializer in zip(serializers, deserializers, cmp_serializers, cmp_deserializers):
-		for fname in tqdm(params_fname_list):
-			params_dict = json.load(open(os.path.join(params_data_dir, fname), 'r'))
-			s = serializer(params_dict)
-			s_cmp = cmp_serializer(params_dict)
-			assert s == s_cmp, s + '\n' + s_cmp
-
-			d = deserializer(s)
-			d_cmp = cmp_deserializer(s)
-			assert d == d_cmp, json.dumps(d, indent=4) + '\n' + json.dumps(d_cmp, indent=4)
-
-
-
+	print('Sanity check passed.')
 
 
