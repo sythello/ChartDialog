@@ -35,5 +35,6 @@ cd ../..
 bash evaluate.sh [YOUR PATH]/ChartDialog-save/s2s_single ./models/seq2seq/outputs/pred_test_s2s_single.1_100000.txt single
 ```
 
-
+### Pretrained model download
+- seq2seq: https://drive.google.com/open?id=15Pv1IeAas0L1PAqCaDPOqiBvKhFonGft
 
