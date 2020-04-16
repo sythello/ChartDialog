@@ -14,7 +14,7 @@ def main(opt):
     ArgumentParser.validate_translate_opts(opt)
     logger = init_logger(opt.log_file)
 
-    ## @Customize
+    ## modified
     # translator = build_translator(opt, report_score=True)
     translator = build_translator(opt, report_score=True, logger=logger)
     src_shards = split_corpus(opt.src, opt.shard_size)
