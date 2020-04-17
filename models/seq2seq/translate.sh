@@ -14,6 +14,8 @@ echo ``VERSION=${VERSION}    STEP=${STEP}``
 # VERSION=s2s_single.1
 # STEP=100000
 
+mkdir -p outputs
+
 python translate.py -model $MODEL_DIR/$VERSION/model.${VERSION}_step_${STEP}.pt \
 -src $DATA_DIR/src.test.txt \
 -tgt $DATA_DIR/tgt.test.txt \

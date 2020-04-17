@@ -12,7 +12,7 @@ echo ``VERSION=${VERSION}``
 # MODEL_DIR=[YOUR PATH]/ChartDialog-save/save_models
 # VERSION=s2s_single.1
 
-mkdir logs
+mkdir -p logs
 
 python train.py \
 -data $DATA_DIR/data_text \
